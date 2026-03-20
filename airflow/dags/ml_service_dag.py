@@ -51,7 +51,7 @@ def call_ml_service_light(**context):
 
 
 with DAG(
-        dag_id="ML-Service",
+        dag_id="ml_load",
         description="Generate traffic to ML service for Grafana metrics",
         start_date=datetime(2024, 1, 1),
         schedule=timedelta(minutes=1),
@@ -63,15 +63,15 @@ with DAG(
         python_callable=call_ml_service_light,
     )
 
-    # normal_load = PythonOperator(
-    #     task_id="normal_load",
-    #     python_callable=call_ml_service,
-    #     op_kwargs={"num_requests": 20},
-    # )
-    #
-    # burst_load = PythonOperator(
-    #     task_id="burst_load",
-    #     python_callable=call_ml_service_burst,
-    # )
+    normal_load = PythonOperator(
+        task_id="normal_load",
+        python_callable=call_ml_service,
+        op_kwargs={"num_requests": 20},
+    )
 
-    # light_load >> normal_load >> burst_load
+    burst_load = PythonOperator(
+        task_id="burst_load",
+        python_callable=call_ml_service_burst,
+    )
+
+    light_load >> normal_load >> burst_load

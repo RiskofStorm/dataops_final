@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  jupyterhub:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - jupyterhub_data:/srv/jupyterhub
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  jupyterhub_data:
+networks:
+  default:
+    name: monitoring-net
+    external: true
